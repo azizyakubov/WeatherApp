@@ -46,10 +46,15 @@ export async function getCurrentWeatherByCoords(lat, lon) {
 }
 
 export function formatWeatherPayload(payload) {
+  // https://openweathermap.org/weather-conditions#Icon-list
+  const iconCode = payload.weather?.[0]?.icon;
   return {
     city: payload.name,
     temperature: `${Math.round(payload.main.temp)} F`,
     condition: payload.weather?.[0]?.description || "Unknown",
+    icon: iconCode
+      ? `https://openweathermap.org/img/wn/${iconCode}@2x.png`
+      : null,
     feelsLike: `${Math.round(payload.main.feels_like)} F`,
     humidity: `${payload.main.humidity}%`,
     wind: `${Math.round(payload.wind.speed)} mph`,

@@ -21,7 +21,15 @@
     </p>
 
     <div v-else-if="weatherData && locationData">
-      <p class="temp temperature">{{ weatherData.temperature }}</p>
+      <div class="temp-row">
+        <p class="temp temperature">{{ weatherData.temperature }}</p>
+        <img
+          v-if="weatherData.icon"
+          :src="weatherData.icon"
+          :alt="weatherData.condition"
+          class="weather-icon"
+        />
+      </div>
       <p class="condition">{{ weatherData.condition }}</p>
       <p class="updated-at">Updated: {{ weatherData.updatedAt }}</p>
       <div class="details">
@@ -102,6 +110,17 @@ onMounted(() => {
 <style scoped>
 .card {
   padding: 20px;
+}
+
+.temp-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.weather-icon {
+  width: 80px;
+  height: 80px;
 }
 
 .temperature {

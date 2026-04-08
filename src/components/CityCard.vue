@@ -4,12 +4,24 @@
       <h3>{{ city.name }}</h3>
       <button type="button" @click="emit('remove', city.id)">Remove</button>
     </div>
-    <Spinner v-if="isLoading" label="Retrieving weather..." class="city-status" />
+    <Spinner
+      v-if="isLoading"
+      label="Retrieving weather..."
+      class="city-status"
+    />
     <p v-else-if="errorMessage" class="city-status city-error">
       {{ errorMessage }}
     </p>
     <template v-else-if="weatherData">
-      <p class="temp city-temp">{{ weatherData.temperature }}</p>
+      <div class="city-temp-row">
+        <p class="temp city-temp">{{ weatherData.temperature }}</p>
+        <img
+          v-if="weatherData.icon"
+          :src="weatherData.icon"
+          :alt="weatherData.condition"
+          class="city-icon"
+        />
+      </div>
       <p class="condition">{{ weatherData.condition }}</p>
       <p class="city-meta">Humidity: {{ weatherData.humidity }}</p>
     </template>
@@ -66,6 +78,17 @@ onMounted(() => {
 
 .city-card h3 {
   font-size: 1rem;
+}
+
+.city-temp-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.city-icon {
+  width: 50px;
+  height: 50px;
 }
 
 .city-temp {
