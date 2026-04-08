@@ -23,6 +23,7 @@
         />
       </div>
       <p class="condition">{{ weatherData.condition }}</p>
+      <p><strong>High / Low:</strong> {{ weatherData.highLow }}</p>
       <p class="city-meta">Humidity: {{ weatherData.humidity }}</p>
     </template>
   </div>
