@@ -10,12 +10,14 @@
         {{ isAddingCity ? "Adding..." : "Add City" }}
       </button>
     </form>
+    <Spinner v-if="isAddingCity" label="Fetching city data..." />
     <p v-if="addCityError" class="add-city-error">{{ addCityError }}</p>
   </div>
 </template>
 
 <script setup>
 import { ref } from "vue";
+import Spinner from "./Spinner.vue";
 import { getCoordinatesByCityQuery } from "../services/weatherApi";
 
 const props = defineProps({

@@ -4,7 +4,7 @@
       <h3>{{ city.name }}</h3>
       <button type="button" @click="emit('remove', city.id)">Remove</button>
     </div>
-    <p v-if="isLoading" class="city-status">Retrieving weather...</p>
+    <Spinner v-if="isLoading" label="Retrieving weather..." class="city-status" />
     <p v-else-if="errorMessage" class="city-status city-error">
       {{ errorMessage }}
     </p>
@@ -18,6 +18,7 @@
 
 <script setup>
 import { onMounted, ref } from "vue";
+import Spinner from "./Spinner.vue";
 import {
   formatWeatherPayload,
   getCoordinatesByCityQuery,

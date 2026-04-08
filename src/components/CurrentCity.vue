@@ -2,12 +2,16 @@
   <div class="weather-card card">
     <h3>Current Location</h3>
 
-    <p v-if="isRequestingLocation" class="status-text">
-      Requesting location permission...
-    </p>
-    <p v-else-if="isLoadingWeather" class="status-text">
-      Retrieving weather for your location...
-    </p>
+    <Spinner
+      v-if="isRequestingLocation"
+      label="Requesting location permission..."
+      class="status-text"
+    />
+    <Spinner
+      v-else-if="isLoadingWeather"
+      label="Retrieving weather for your location..."
+      class="status-text"
+    />
     <p v-else-if="permissionDenied" class="status-text warning">
       Please allow current location permissions to view the current city's
       weather.
@@ -33,6 +37,7 @@
 
 <script setup>
 import { computed, onMounted, ref } from "vue";
+import Spinner from "./Spinner.vue";
 import {
   formatWeatherPayload,
   getCurrentWeatherByCoords,
