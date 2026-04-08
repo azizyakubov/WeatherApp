@@ -1,6 +1,14 @@
 <template>
   <div class="weather-card card">
-    <h3>Current Location</h3>
+    <button
+      v-if="weatherData"
+      type="button"
+      class="location-name-btn"
+      @click="emit('select', { id: 'current-location', name: weatherData.city, query: weatherData.city })"
+    >
+      Current Location
+    </button>
+    <h3 v-else>Current Location</h3>
 
     <Spinner
       v-if="isRequestingLocation"
@@ -44,8 +52,10 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from "vue";
+import { onMounted, ref } from "vue";
 import Spinner from "./Spinner.vue";
+
+const emit = defineEmits(["select"]);
 import {
   formatWeatherPayload,
   getCurrentWeatherByCoords,
@@ -58,9 +68,6 @@ const errorMessage = ref("");
 const locationData = ref(null);
 const weatherData = ref(null);
 
-const formattedLocation = computed(() =>
-  JSON.stringify(locationData.value, null, 2),
-);
 
 onMounted(() => {
   if (!navigator.geolocation) {
@@ -110,6 +117,18 @@ onMounted(() => {
 <style scoped>
 .card {
   padding: 20px;
+}
+
+.location-name-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: inherit;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 .temp-row {

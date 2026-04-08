@@ -1,7 +1,9 @@
 <template>
   <div class="weather-card city-card">
     <div class="card-header">
-      <h3>{{ city.name }}</h3>
+      <button type="button" class="city-name-btn" @click="emit('select', city)">
+        {{ city.name }}
+      </button>
       <button type="button" @click="emit('remove', city.id)">Remove</button>
     </div>
     <Spinner
@@ -44,7 +46,7 @@ const props = defineProps({
     required: true,
   },
 });
-const emit = defineEmits(["remove"]);
+const emit = defineEmits(["remove", "select"]);
 
 const isLoading = ref(true);
 const errorMessage = ref("");
@@ -102,6 +104,19 @@ onMounted(() => {
   justify-content: space-between;
   align-items: center;
   gap: 8px;
+}
+
+.city-name-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: inherit;
+  cursor: pointer;
+  text-align: left;
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 .city-status {
