@@ -1,9 +1,12 @@
 <template>
-  <div class="weather-card current-card">
+  <div class="weather-card card">
     <h3>Current Location</h3>
 
-    <p v-if="isLoading" class="status-text">
+    <p v-if="isRequestingLocation" class="status-text">
       Requesting location permission...
+    </p>
+    <p v-else-if="isLoadingWeather" class="status-text">
+      Retrieving weather for your location...
     </p>
     <p v-else-if="permissionDenied" class="status-text warning">
       Please allow current location permissions to view the current city's
@@ -13,20 +16,34 @@
       {{ errorMessage }}
     </p>
 
-    <div v-else-if="locationData">
-      <p class="status-text success">Current location object captured:</p>
-      <pre>{{ formattedLocation }}</pre>
+    <div v-else-if="weatherData && locationData">
+      <p class="temp temperature">{{ weatherData.temperature }}</p>
+      <p class="condition">{{ weatherData.condition }}</p>
+      <p class="updated-at">Updated: {{ weatherData.updatedAt }}</p>
+      <div class="details">
+        <p><strong>City:</strong> {{ weatherData.city }}</p>
+        <p><strong>Feels like:</strong> {{ weatherData.feelsLike }}</p>
+        <p><strong>Humidity:</strong> {{ weatherData.humidity }}</p>
+        <p><strong>Wind:</strong> {{ weatherData.wind }}</p>
+        <p><strong>High / Low:</strong> {{ weatherData.highLow }}</p>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
 import { computed, onMounted, ref } from "vue";
+import {
+  formatWeatherPayload,
+  getCurrentWeatherByCoords,
+} from "../services/weatherApi";
 
-const isLoading = ref(true);
+const isRequestingLocation = ref(true);
+const isLoadingWeather = ref(false);
 const permissionDenied = ref(false);
 const errorMessage = ref("");
 const locationData = ref(null);
+const weatherData = ref(null);
 
 const formattedLocation = computed(() =>
   JSON.stringify(locationData.value, null, 2),
@@ -34,24 +51,39 @@ const formattedLocation = computed(() =>
 
 onMounted(() => {
   if (!navigator.geolocation) {
-    isLoading.value = false;
+    isRequestingLocation.value = false;
     errorMessage.value = "Geolocation is not supported in this browser.";
     return;
   }
 
   navigator.geolocation.getCurrentPosition(
-    (position) => {
-      console.log(position);
+    async (position) => {
       locationData.value = {
         coords: {
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
+          accuracy: position.coords.accuracy,
         },
+        timestamp: position.timestamp,
       };
-      isLoading.value = false;
+      isRequestingLocation.value = false;
+      isLoadingWeather.value = true;
+
+      try {
+        const weatherPayload = await getCurrentWeatherByCoords(
+          locationData.value.coords.latitude,
+          locationData.value.coords.longitude,
+        );
+        weatherData.value = formatWeatherPayload(weatherPayload);
+      } catch (error) {
+        errorMessage.value =
+          "Unable to retrieve weather for your current location.";
+      } finally {
+        isLoadingWeather.value = false;
+      }
     },
     (error) => {
-      isLoading.value = false;
+      isRequestingLocation.value = false;
       if (error.code === error.PERMISSION_DENIED) {
         permissionDenied.value = true;
         return;

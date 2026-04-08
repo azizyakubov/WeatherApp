@@ -23,45 +23,40 @@
 </template>
 
 <script setup>
+import { ref } from "vue";
 import CityCard from "./components/CityCard.vue";
 import CurrentCity from "./components/CurrentCity.vue";
 
-const selectedCities = [
+const selectedCities = ref([
   {
     id: "la-us",
     name: "Los Angeles, CA, US",
-    temperature: "75 F",
-    condition: "Sunny",
+    query: "Los Angeles,CA,US",
   },
   {
     id: "sf-us",
     name: "San Francisco, CA, US",
-    temperature: "64 F",
-    condition: "Foggy",
+    query: "San Francisco,CA,US",
   },
   {
     id: "austin-us",
     name: "Austin, TX, US",
-    temperature: "83 F",
-    condition: "Hot and Clear",
+    query: "Austin,TX,US",
   },
   {
     id: "lisbon-pt",
     name: "Lisbon, PT",
-    temperature: "70 F",
-    condition: "Breezy",
+    query: "Lisbon,PT",
   },
   {
     id: "auckland-nz",
     name: "Auckland, NZ",
-    temperature: "61 F",
-    condition: "Light Rain",
+    query: "Auckland,NZ",
   },
   {
     id: "newyork-us",
     name: "New York, NY",
-    temperature: "67 F",
-    condition: "Cloudy",
+    query: "New York,NY,US",
   },
-];
+]);
 </script>

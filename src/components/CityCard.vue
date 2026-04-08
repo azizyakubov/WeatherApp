@@ -4,17 +4,57 @@
       <h3>{{ city.name }}</h3>
       <button type="button" disabled>Remove</button>
     </div>
-    <p class="temp city-temp">{{ city.temperature }}</p>
-    <p class="condition">{{ city.condition }}</p>
+    <p v-if="isLoading" class="city-status">Retrieving weather...</p>
+    <p v-else-if="errorMessage" class="city-status city-error">
+      {{ errorMessage }}
+    </p>
+    <template v-else-if="weatherData">
+      <p class="temp city-temp">{{ weatherData.temperature }}</p>
+      <p class="condition">{{ weatherData.condition }}</p>
+      <p class="city-meta">Humidity: {{ weatherData.humidity }}</p>
+    </template>
   </div>
 </template>
 
 <script setup>
-defineProps({
+import { onMounted, ref } from "vue";
+import {
+  formatWeatherPayload,
+  getCoordinatesByCityQuery,
+  getCurrentWeatherByCoords,
+} from "../services/weatherApi";
+
+const props = defineProps({
   city: {
     type: Object,
     required: true,
   },
+});
+
+const isLoading = ref(true);
+const errorMessage = ref("");
+const weatherData = ref(null);
+
+async function fetchWeather() {
+  isLoading.value = true;
+  errorMessage.value = "";
+  try {
+    const coords = await getCoordinatesByCityQuery(props.city.query);
+    const weatherPayload = await getCurrentWeatherByCoords(
+      coords.lat,
+      coords.lon,
+    );
+    console.log(weatherPayload);
+    weatherData.value = formatWeatherPayload(weatherPayload);
+  } catch (error) {
+    errorMessage.value = "Unable to load weather.";
+  } finally {
+    isLoading.value = false;
+  }
+}
+
+onMounted(() => {
+  fetchWeather();
 });
 </script>
 
