@@ -2,7 +2,7 @@
   <div class="weather-card city-card">
     <div class="card-header">
       <h3>{{ city.name }}</h3>
-      <button type="button" disabled>Remove</button>
+      <button type="button" @click="emit('remove', city.id)">Remove</button>
     </div>
     <p v-if="isLoading" class="city-status">Retrieving weather...</p>
     <p v-else-if="errorMessage" class="city-status city-error">
@@ -30,6 +30,7 @@ const props = defineProps({
     required: true,
   },
 });
+const emit = defineEmits(["remove"]);
 
 const isLoading = ref(true);
 const errorMessage = ref("");
@@ -44,7 +45,6 @@ async function fetchWeather() {
       coords.lat,
       coords.lon,
     );
-    console.log(weatherPayload);
     weatherData.value = formatWeatherPayload(weatherPayload);
   } catch (error) {
     errorMessage.value = "Unable to load weather.";

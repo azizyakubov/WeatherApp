@@ -5,7 +5,7 @@ function getApiKey() {
   const apiKey = process.env.OPENWEATHER_API_KEY;
   if (!apiKey) {
     throw new Error(
-      "Missing OpenWeather API key. Set OPENWEATHER_API_KEY or VUE_APP_OPENWEATHER_API_KEY in .env.",
+      "Missing OpenWeather API key. Set OPENWEATHER_API_KEY .env.",
     );
   }
   return apiKey;
@@ -28,7 +28,15 @@ export async function getCoordinatesByCityQuery(query) {
   if (!Array.isArray(results) || results.length === 0) {
     throw new Error("City coordinates not found.");
   }
-  return { lat: results[0].lat, lon: results[0].lon };
+
+  const city = results[0];
+  return {
+    lat: city.lat,
+    lon: city.lon,
+    name: city.name,
+    country: city.country,
+    state: city.state || "",
+  };
 }
 
 export async function getCurrentWeatherByCoords(lat, lon) {
