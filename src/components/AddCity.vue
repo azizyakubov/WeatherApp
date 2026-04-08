@@ -6,7 +6,7 @@
         type="text"
         placeholder="Search city (e.g. Paris, FR)"
       />
-      <button type="submit" :disabled="isAddingCity">
+      <button type="submit" class="btn-primary" :disabled="isAddingCity">
         {{ isAddingCity ? "Adding..." : "Add City" }}
       </button>
     </form>
@@ -113,9 +113,6 @@ async function addCity() {
   border-radius: 6px;
 }
 
-.add-city-form button {
-  padding: 8px 10px;
-}
 
 .add-city-error {
   margin: 0;
