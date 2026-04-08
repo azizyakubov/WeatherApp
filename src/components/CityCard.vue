@@ -4,7 +4,9 @@
       <button type="button" class="city-name-btn" @click="emit('select', city)">
         {{ city.name }}
       </button>
-      <button type="button" class="btn-danger" @click="emit('remove', city.id)">Remove</button>
+      <button type="button" class="btn-danger" @click="emit('remove', city.id)">
+        Remove
+      </button>
     </div>
     <Spinner
       v-if="isLoading"

@@ -7,12 +7,9 @@
     <template v-else>
       <header class="hero">
         <h1>Weather Dashboard</h1>
-        <p>Welcome to WeatherApp</p>
       </header>
 
-      <div class="panel">
-        <CurrentCity @select="selectedCity = $event" />
-      </div>
+      <CurrentCity @select="selectedCity = $event" />
 
       <div class="panel">
         <div class="panel-heading">
