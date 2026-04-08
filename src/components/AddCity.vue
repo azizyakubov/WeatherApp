@@ -16,9 +16,10 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import Spinner from "./Spinner.vue";
 import { getCoordinatesByCityQuery } from "../services/weatherApi";
+import { useCitiesStore } from "../stores/cities";
 
 const props = defineProps({
   existingCities: {
@@ -27,11 +28,14 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(["city-added"]);
-
 const newCityQuery = ref("");
 const isAddingCity = ref(false);
 const addCityError = ref("");
+const citiesStore = useCitiesStore();
+
+const existingKeys = computed(
+  () => new Set(props.existingCities.map((city) => city.key)),
+);
 
 function buildCityLabel(city) {
   const parts = [city.name];
@@ -63,15 +67,14 @@ async function addCity() {
 
   try {
     const match = await getCoordinatesByCityQuery(trimmedQuery);
-    const existingKeys = new Set(props.existingCities.map((city) => city.key));
     const newKey = buildCityKey(match);
 
-    if (existingKeys.has(newKey)) {
+    if (existingKeys.value.has(newKey)) {
       addCityError.value = "City already added.";
       return;
     }
 
-    emit("city-added", {
+    citiesStore.addCity({
       id: `${newKey}-${Date.now()}`,
       name: buildCityLabel(match),
       query: buildCityLabel(match),
