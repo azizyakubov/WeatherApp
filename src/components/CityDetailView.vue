@@ -7,7 +7,11 @@
       <h2>{{ city.name }}</h2>
     </div>
 
-    <Spinner v-if="isLoading" label="Loading forecast..." class="detail-status" />
+    <Spinner
+      v-if="isLoading"
+      label="Loading forecast..."
+      class="detail-status"
+    />
     <p v-else-if="errorMessage" class="detail-error">{{ errorMessage }}</p>
 
     <template v-else>
@@ -40,9 +44,7 @@
               class="forecast-icon"
             />
             <p class="daily-condition">{{ entry.condition }}</p>
-            <p class="daily-highlow">
-              {{ entry.high }} / {{ entry.low }}
-            </p>
+            <p class="daily-highlow">{{ entry.high }} / {{ entry.low }}</p>
           </div>
         </div>
       </section>
@@ -195,6 +197,7 @@ onMounted(async () => {
 .daily-row {
   display: grid;
   grid-template-columns: 48px 48px 1fr auto;
+  min-width: 400px;
   align-items: center;
   gap: 12px;
   padding: 8px 12px;
