@@ -63,6 +63,32 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.card {
+  padding: 20px;
+}
+
+.temperature {
+  font-size: 2rem;
+}
+
+.details {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px 16px;
+  margin-top: 12px;
+}
+
+.details p {
+  margin: 0;
+  color: #334155;
+}
+
+.updated-at {
+  margin: 0;
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
 .status-text {
   margin: 8px 0 0;
   color: #334155;
@@ -74,5 +100,11 @@ onMounted(() => {
 
 .success {
   color: #166534;
+}
+
+@media (max-width: 640px) {
+  .details {
+    grid-template-columns: 1fr;
+  }
 }
 </style>

@@ -33,6 +33,7 @@ body {
   border-radius: 10px;
   padding: 16px;
   margin-top: 20px;
+  min-width: 300px;
 }
 
 .panel-heading {
@@ -63,45 +64,6 @@ body {
   margin: 0 0 8px;
 }
 
-.current-card {
-  padding: 20px;
-}
-
-.current-temp {
-  font-size: 2rem;
-}
-
-.current-card-details {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px 16px;
-  margin-top: 12px;
-}
-
-.current-card-details p {
-  margin: 0;
-  color: #334155;
-}
-
-.updated-at {
-  margin: 0;
-  color: #64748b;
-  font-size: 0.9rem;
-}
-
-.city-card {
-  padding: 10px 12px;
-}
-
-.city-card h3 {
-  font-size: 1rem;
-}
-
-.city-temp {
-  font-size: 1.2rem;
-  margin-bottom: 4px;
-}
-
 .city-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
@@ -109,15 +71,3 @@ body {
   margin-top: 12px;
 }
 
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 8px;
-}
-
-@media (max-width: 640px) {
-  .current-card-details {
-    grid-template-columns: 1fr;
-  }
-}
