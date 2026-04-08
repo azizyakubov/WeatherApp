@@ -6,19 +6,7 @@
     </header>
 
     <div class="panel">
-      <h2>Current Location</h2>
-      <div class="weather-card current-card">
-        <h3>{{ currentLocation.city }}</h3>
-        <p class="temp current-temp">{{ currentLocation.temperature }}</p>
-        <p class="condition">{{ currentLocation.condition }}</p>
-        <p class="updated-at">Updated: {{ currentLocation.updatedAt }}</p>
-        <div class="current-card-details">
-          <p><strong>Feels like:</strong> {{ currentLocation.feelsLike }}</p>
-          <p><strong>Humidity:</strong> {{ currentLocation.humidity }}</p>
-          <p><strong>Wind:</strong> {{ currentLocation.wind }}</p>
-          <p><strong>High / Low:</strong> {{ currentLocation.highLow }}</p>
-        </div>
-      </div>
+      <CurrentCity />
     </div>
 
     <div class="panel">
@@ -36,17 +24,7 @@
 
 <script setup>
 import CityCard from "./components/CityCard.vue";
-
-const currentLocation = {
-  city: "Current Location (Placeholder)",
-  temperature: "72 F",
-  condition: "Partly Cloudy",
-  feelsLike: "74 F",
-  humidity: "58%",
-  wind: "8 mph NW",
-  highLow: "78 F / 63 F",
-  updatedAt: "Just now",
-};
+import CurrentCity from "./components/CurrentCity.vue";
 
 const selectedCities = [
   {
