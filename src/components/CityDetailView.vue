@@ -109,21 +109,24 @@ onMounted(async () => {
 .detail-header h2 {
   margin: 0;
   font-size: 1.4rem;
+  color: #ffffff;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.2);
 }
 
 .back-btn {
-  background: none;
-  border: 1px solid #cbd5e1;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.35);
   border-radius: 6px;
   padding: 6px 12px;
   cursor: pointer;
   font-size: 0.9rem;
-  color: #334155;
+  color: #ffffff;
   white-space: nowrap;
+  backdrop-filter: blur(4px);
 }
 
 .back-btn:hover {
-  background: #f1f5f9;
+  background: rgba(255, 255, 255, 0.25);
 }
 
 .detail-status {
