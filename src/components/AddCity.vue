@@ -1,12 +1,15 @@
 <template>
   <div class="add-city">
     <form class="add-city-form" @submit.prevent="addCity">
-      <input
-        v-model="newCityQuery"
-        type="text"
-        placeholder="Search city (e.g. Paris, FR)"
-        v-on:input="displaySuggestedCities"
-      />
+      <div class="input-wrap">
+        <input
+          v-model="newCityQuery"
+          type="text"
+          placeholder="Search city (e.g. Paris, FR)"
+          v-on:input="displaySuggestedCities"
+        />
+        <button v-if="newCityQuery.length" type="button" class="clear-btn" @click="clearSearch">X</button>
+      </div>
       <button type="submit" class="btn-primary" :disabled="isAddingCity">
         {{ isAddingCity ? "Adding..." : "Add City" }}
       </button>
@@ -127,6 +130,12 @@ const debouncedFetch = debounce(async (query) => {
   }
 }, 500);
 
+function clearSearch() {
+  newCityQuery.value = "";
+  suggestedCities.value = [];
+  isFetchingSuggestions.value = false;
+}
+
 function displaySuggestedCities() {
   if (!newCityQuery.value.trim()) {
     suggestedCities.value = [];
@@ -152,11 +161,29 @@ function displaySuggestedCities() {
   align-items: center;
 }
 
+.input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
 .add-city-form input {
   min-width: 220px;
   padding: 8px 10px;
   border: 1px solid #cbd5e1;
   border-radius: 6px;
+}
+
+.clear-btn {
+  position: absolute;
+  right: 6px;
+  cursor: pointer;
+  color: grey;
+  padding: 5px;
+}
+
+.clear-btn:hover {
+  color: #475569;
 }
 
 .dropdown {
