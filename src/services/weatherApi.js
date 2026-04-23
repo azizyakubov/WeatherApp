@@ -20,6 +20,16 @@ async function fetchJson(url) {
   return response.json();
 }
 
+export async function getSuggestedCities(query) {
+  const apiKey = getApiKey();
+  const url = `${GEOCODE_BASE_URL}?q=${encodeURIComponent(
+    query,
+  )}&limit=5&appid=${apiKey}`;
+  const results = await fetchJson(url);
+  const cities = results;
+  return cities;
+}
+
 export async function getCoordinatesByCityQuery(query) {
   const apiKey = getApiKey();
   const url = `${GEOCODE_BASE_URL}?q=${encodeURIComponent(
