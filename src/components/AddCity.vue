@@ -20,7 +20,7 @@
           <Spinner />
         </li>
         <template v-else>
-          <li v-for="city in suggestedCities" @click="addCity(city.name)" class="suggested-city">
+          <li v-for="city in suggestedCities" @click="addSuggestedCity(city)" class="suggested-city">
             {{ city.name }}, {{ city?.state }}, {{ city.country }}
           </li>
           <li v-if="!suggestedCities.length" class="suggested-city">No cities found, please check spelling</li>
@@ -74,8 +74,8 @@ function buildCityKey(city) {
   ).toLowerCase()}`;
 }
 
-async function addCity(cityName) {
-  const trimmedQuery = cityName ? cityName : newCityQuery.value.trim();
+async function addCity() {
+  const trimmedQuery = newCityQuery.value.trim();
   addCityError.value = "";
 
   if (!trimmedQuery) {
@@ -89,10 +89,10 @@ async function addCity(cityName) {
     const match = await getCoordinatesByCityQuery(trimmedQuery);
     const newKey = buildCityKey(match);
 
-    // if (existingKeys.value.has(newKey)) {
-    //   addCityError.value = "City already added.";
-    //   return;
-    // }
+    if (existingKeys.value.has(newKey)) {
+      addCityError.value = "City already added.";
+      return;
+    }
 
     citiesStore.addCity({
       id: `${newKey}-${Date.now()}`,
@@ -129,6 +129,23 @@ const debouncedFetch = debounce(async (query) => {
     isFetchingSuggestions.value = false;
   }
 }, 500);
+
+function addSuggestedCity(city) {
+  const newKey = buildCityKey(city);
+  if (existingKeys.value.has(newKey)) {
+    addCityError.value = "City already added.";
+    return;
+  }
+  citiesStore.addCity({
+    id: `${newKey}-${Date.now()}`,
+    name: buildCityLabel(city),
+    query: buildCityLabel(city),
+    key: newKey,
+  });
+  newCityQuery.value = "";
+  suggestedCities.value = [];
+  addCityError.value = "";
+}
 
 function clearSearch() {
   newCityQuery.value = "";
