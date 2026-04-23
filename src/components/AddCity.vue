@@ -5,11 +5,19 @@
         v-model="newCityQuery"
         type="text"
         placeholder="Search city (e.g. Paris, FR)"
+        v-on:input="displaySuggestedCities"
       />
       <button type="submit" class="btn-primary" :disabled="isAddingCity">
         {{ isAddingCity ? "Adding..." : "Add City" }}
       </button>
     </form>
+    <div v-if="newCityQuery.length" class="dropdown">
+      <ul>
+        <li v-for="city in suggestedCities" @click="addCity(city.name)" class="suggested-city">
+          {{ city.name }}, {{ city?.state }}, {{ city.country }}
+        </li>
+      </ul>
+    </div>
     <Spinner v-if="isAddingCity" label="Fetching city data..." />
     <p v-if="addCityError" class="add-city-error">{{ addCityError }}</p>
   </div>
@@ -18,7 +26,7 @@
 <script setup>
 import { ref, computed } from "vue";
 import Spinner from "./Spinner.vue";
-import { getCoordinatesByCityQuery } from "../services/weatherApi";
+import { getCoordinatesByCityQuery, getSuggestedCities } from "../services/weatherApi";
 import { useCitiesStore } from "../stores/cities";
 
 const props = defineProps({
@@ -27,6 +35,8 @@ const props = defineProps({
     required: true,
   },
 });
+
+const suggestedCities = ref()
 
 const newCityQuery = ref("");
 const isAddingCity = ref(false);
@@ -54,8 +64,8 @@ function buildCityKey(city) {
   ).toLowerCase()}`;
 }
 
-async function addCity() {
-  const trimmedQuery = newCityQuery.value.trim();
+async function addCity(cityName) {
+  const trimmedQuery = cityName ? cityName : newCityQuery.value.trim();
   addCityError.value = "";
 
   if (!trimmedQuery) {
@@ -69,10 +79,10 @@ async function addCity() {
     const match = await getCoordinatesByCityQuery(trimmedQuery);
     const newKey = buildCityKey(match);
 
-    if (existingKeys.value.has(newKey)) {
-      addCityError.value = "City already added.";
-      return;
-    }
+    // if (existingKeys.value.has(newKey)) {
+    //   addCityError.value = "City already added.";
+    //   return;
+    // }
 
     citiesStore.addCity({
       id: `${newKey}-${Date.now()}`,
@@ -91,6 +101,28 @@ async function addCity() {
     isAddingCity.value = false;
   }
 }
+
+function debounce(func, delay) {
+  let timeout;
+  return function (...args) {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => {
+      func.apply(this, args);
+    }, delay);
+  };
+}
+
+const debouncedFetch = debounce(async (query) => {
+  suggestedCities.value = await getSuggestedCities(query);
+}, 500);
+
+function displaySuggestedCities() {
+  if (!newCityQuery.value.trim()) {
+    suggestedCities.value = [];
+    return;
+  }
+  debouncedFetch(newCityQuery.value);
+}
 </script>
 
 <style scoped>
@@ -98,6 +130,7 @@ async function addCity() {
   display: flex;
   flex-direction: column;
   gap: 6px;
+  position: relative;
 }
 
 .add-city-form {
@@ -113,6 +146,36 @@ async function addCity() {
   border-radius: 6px;
 }
 
+.dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: white;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  max-height: 250px;
+  z-index: 10;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 4px 0;
+}
+
+.suggested-city {
+  cursor: pointer;
+  padding: 8px 12px;
+}
+
+.suggested-city:hover {
+  background-color: #cbd5e1;
+}
+
+.suggested-city:active {
+  background-color: #cbd5e1;
+}
 
 .add-city-error {
   margin: 0;
