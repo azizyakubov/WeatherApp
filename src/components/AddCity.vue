@@ -13,9 +13,15 @@
     </form>
     <div v-if="newCityQuery.length" class="dropdown">
       <ul>
-        <li v-for="city in suggestedCities" @click="addCity(city.name)" class="suggested-city">
-          {{ city.name }}, {{ city?.state }}, {{ city.country }}
+        <li v-if="isFetchingSuggestions" class="suggested-city">
+          <Spinner />
         </li>
+        <template v-else>
+          <li v-for="city in suggestedCities" @click="addCity(city.name)" class="suggested-city">
+            {{ city.name }}, {{ city?.state }}, {{ city.country }}
+          </li>
+          <li v-if="!suggestedCities.length" class="suggested-city">No cities found, please check spelling</li>
+        </template>
       </ul>
     </div>
     <Spinner v-if="isAddingCity" label="Fetching city data..." />
@@ -36,7 +42,8 @@ const props = defineProps({
   },
 });
 
-const suggestedCities = ref()
+const suggestedCities = ref([])
+const isFetchingSuggestions = ref(false)
 
 const newCityQuery = ref("");
 const isAddingCity = ref(false);
@@ -113,14 +120,20 @@ function debounce(func, delay) {
 }
 
 const debouncedFetch = debounce(async (query) => {
-  suggestedCities.value = await getSuggestedCities(query);
+  try {
+    suggestedCities.value = await getSuggestedCities(query);
+  } finally {
+    isFetchingSuggestions.value = false;
+  }
 }, 500);
 
 function displaySuggestedCities() {
   if (!newCityQuery.value.trim()) {
     suggestedCities.value = [];
+    isFetchingSuggestions.value = false;
     return;
   }
+  isFetchingSuggestions.value = true;
   debouncedFetch(newCityQuery.value);
 }
 </script>
@@ -150,6 +163,7 @@ function displaySuggestedCities() {
   position: absolute;
   top: 100%;
   left: 0;
+  width: 300px;
   background-color: white;
   border: 1px solid #cbd5e1;
   border-radius: 6px;
