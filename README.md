@@ -1,6 +1,6 @@
 # WeatherApp
 
-Augment FE Take home. A Vue 3 weather dashboard that shows current conditions for your location and a set of saved cities, with hourly and 5-day forecast detail views.
+A Vue 3 weather dashboard that shows current conditions for your location and a set of saved cities, with hourly and 5-day forecast detail views.
 
 ## Prerequisites
 
